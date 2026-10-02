@@ -1,8 +1,6 @@
 name: CI
 
 on:
-  pull_request:
-    branches: [ main ]
   push:
     tags:
       - "v*"
@@ -14,9 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: fozztexx/defoogi:1.4.4
-
-    outputs:
-      files: ${{ steps.list_zips.outputs.files }}
 
     steps:
       - uses: actions/checkout@v4
@@ -34,39 +29,11 @@ jobs:
       - name: Build release files
         run: make release
 
-      - name: List zip files
-        id: list_zips
-        shell: bash
-        run: |
-          echo 'files=["'"$(( cd dist ; echo *.zip ) | sed -e 's/ /","/g')"'"]' >> $GITHUB_OUTPUT
-
       - name: Upload dist folder for next job
         uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist/
-
-  upload:
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    strategy:
-      matrix:
-        file: ${{ fromJson(needs.build.outputs.files) }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download dist folder
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist
-
-      - name: Upload individual artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.file }}
-          path: dist/${{ matrix.file }}
 
   tagged-release:
     needs: build
