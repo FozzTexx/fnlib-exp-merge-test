@@ -189,7 +189,7 @@ vpath %.pas $(SRC_DIRS_EXPANDED)
 .PHONY: clean debug r2r $(PLATFORM)/r2r disk $(PLATFORM)/disk $(PLATFORM)/release
 
 clean::
-	rm -rf $(OBJ_DIR) $(CACHE_PLATFORM) $(R2R_PD)
+	rm -rf $(OBJ_DIR) $(CACHE_PLATFORM) $(R2R_PD) $(RELEASE_DIR)
 
 debug::
 	echo 'What should debug target do?'
