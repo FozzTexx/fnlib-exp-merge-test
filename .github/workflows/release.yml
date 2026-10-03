@@ -19,6 +19,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Verify version matches tag
+        shell: bash
+        run: |
+          # Extract the version string inside the quotes from the FULL macro
+          FILE_VERSION=$(grep 'FNLIB_VERSION_FULL' include/fujinet-version.h | sed -E 's/.*"([^"]+)".*/\1/')
+          TAG_VERSION="${{ github.ref_name }}"
+
+          echo "File Version: $FILE_VERSION"
+          echo "Git Tag:      $TAG_VERSION"
+
+          if [ "$FILE_VERSION" != "$TAG_VERSION" ]; then
+            echo "::error:: Mismatch detected! include/fujinet-version.h is set to '$FILE_VERSION' but the triggered tag is '$TAG_VERSION'."
+            exit 1
+          fi
+
       - name: Set version string
         shell: bash
         run: |
