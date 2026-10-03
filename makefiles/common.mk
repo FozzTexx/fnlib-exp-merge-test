@@ -249,7 +249,8 @@ $(PLATFORM)/library-post::
 RELEASE_INCLUDES ?= $(foreach dir,$(INCLUDE_DIRS),$(wildcard $(dir)/*.h $(dir)/*.inc))
 RELEASE_INCLUDES += $(wildcard Changelog.md)
 RELEASE_VERSION ?= $(shell git describe --tags --abbrev=0 2>/dev/null || echo dev)
-RELEASE_ZIP = $(RELEASE_DIR)/$(PRODUCT)-$(RELEASE_VERSION)-$(PLATFORM).zip
+PRODUCT_DASH = $(subst .,-,$(PRODUCT))
+RELEASE_ZIP = $(RELEASE_DIR)/$(PRODUCT_DASH)-$(RELEASE_VERSION)-$(PLATFORM).zip
 
 $(PLATFORM)/release: $(RELEASE_ZIP)
 $(RELEASE_ZIP):: $(LIBRARY)
