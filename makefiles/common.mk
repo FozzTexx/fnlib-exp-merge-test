@@ -250,7 +250,8 @@ RELEASE_INCLUDES ?= $(foreach dir,$(INCLUDE_DIRS),$(wildcard $(dir)/*.h $(dir)/*
 RELEASE_INCLUDES += $(wildcard Changelog.md)
 RELEASE_VERSION ?= $(shell git describe --tags --abbrev=0 2>/dev/null || echo dev)
 PRODUCT_DASH = $(subst .,-,$(PRODUCT))
-RELEASE_ZIP = $(RELEASE_DIR)/$(PRODUCT_DASH)-$(RELEASE_VERSION)-$(PLATFORM).zip
+VERSION_CLEAN = $(patsubst v%,%,$(RELEASE_VERSION))
+RELEASE_ZIP = $(RELEASE_DIR)/$(PRODUCT_DASH)-$(PLATFORM)-$(VERSION_CLEAN).zip
 
 $(PLATFORM)/release: $(RELEASE_ZIP)
 $(RELEASE_ZIP):: $(LIBRARY)
