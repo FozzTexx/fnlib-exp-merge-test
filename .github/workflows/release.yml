@@ -53,22 +53,10 @@ jobs:
 
       - name: Generate random release name
         id: random_name
-        shell: bash
         run: |
-          # Fetch the raw text contents securely via the GitHub API/CLI
-          gh api repos/fnichol/names/contents/data/adjectives.txt --jq '.content' | base64 -d > adjectives.txt
-          gh api repos/fnichol/names/contents/data/animals.txt --jq '.content' | base64 -d > nouns.txt
-
-          # Select a random line from each file
-          adj=$(shuf -n 1 adjectives.txt | tr -d '\r\n[:space:]')
-          noun=$(shuf -n 1 nouns.txt | tr -d '\r\n[:space:]')
-
-          RANDOM_NAME=$(echo "${adj}-${noun}" | tr '[:upper:]' '[:lower:]')
-
+          RANDOM_NAME=$(docker run --rm fnichol/names)
           echo "name=$RANDOM_NAME" >> $GITHUB_OUTPUT
           echo "Generated release name: $RANDOM_NAME"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release and Upload Assets
         uses: softprops/action-gh-release@v2
