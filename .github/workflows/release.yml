@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: CI
+    name: Release
     runs-on: ubuntu-latest
     container:
       image: fozztexx/defoogi:1.4.4
@@ -29,11 +29,11 @@ jobs:
       - name: Build release files
         run: make release
 
-      - name: Upload dist folder for next job
+      - name: Upload release folder for next job
         uses: actions/upload-artifact@v4
         with:
-          name: dist
-          path: dist/
+          name: release
+          path: release/
 
   tagged-release:
     needs: build
@@ -42,12 +42,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Download the dist folder from the build job
+      # Download the release folder from the build job
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: dist
-          path: dist
+          name: release
+          path: release
 
       # Generate random release name
       - name: Generate random release name
@@ -72,7 +72,7 @@ jobs:
       # Upload each zip as a release asset
       - name: Upload release assets
         run: |
-          for zip in dist/*.zip; do
+          for zip in release/*.zip; do
             echo "Uploading $zip..."
             gh release upload ${{ github.ref_name }} "$zip"
           done
